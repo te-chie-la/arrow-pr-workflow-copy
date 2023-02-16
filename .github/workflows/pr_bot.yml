@@ -54,7 +54,7 @@ jobs:
         run: pip install -e arrow/dev/archery[bot]
       - name: Handle PR workflow event
         env:
-          ARROW_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARROW_GITHUB_TOKEN: ${{ secrets.ARROW_GITHUB_TOKEN }}
           CROSSBOW_GITHUB_TOKEN: ${{ secrets.CROSSBOW_GITHUB_TOKEN }}
         run: |
           archery trigger-bot \
