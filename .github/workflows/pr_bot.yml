@@ -23,9 +23,9 @@ on:
       - converted_to_draft
       - ready_for_review
       - synchronize
-  pull_request_review:
-    types:
-      - submitted
+  workflow_run:
+    workflows: ["Label when reviewed"]
+    types: ['requested']
 
 permissions:
   contents: read
@@ -54,7 +54,7 @@ jobs:
         run: pip install -e arrow/dev/archery[bot]
       - name: Handle PR workflow event
         env:
-          ARROW_GITHUB_TOKEN: ${{ secrets.ARROW_GITHUB_TOKEN }}
+          ARROW_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CROSSBOW_GITHUB_TOKEN: ${{ secrets.CROSSBOW_GITHUB_TOKEN }}
         run: |
           archery trigger-bot \

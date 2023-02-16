@@ -107,10 +107,6 @@ COMMITTER_ROLES = {'OWNER', 'MEMBER'}
 class PullRequestWorkflowBot:
 
     def __init__(self, event_name, event_payload, token=None):
-        if token:
-            import hashlib
-            sha256 = hashlib.sha256(bytes(token, "utf-8")).hexdigest()
-            print(f"### sha for token: {sha256}")
         self.github = github.Github(token)
         self.event_name = event_name
         self.event_payload = event_payload
@@ -134,13 +130,11 @@ class PullRequestWorkflowBot:
         except EventError:
             # In case of error (more than one state) we clear state labels
             # only possible if a label has been manually added.
-            # self.clear_current_state()
-            current_state = None
+            self.clear_current_state()
         new_state = self.get_target_state(current_state)
         if current_state != new_state.value:
             if current_state:
-                #self.clear_current_state()
-                pass
+                self.clear_current_state()
             self.set_state(new_state)
 
     def get_current_state(self):
