@@ -107,6 +107,7 @@ COMMITTER_ROLES = {'OWNER', 'MEMBER'}
 class PullRequestWorkflowBot:
 
     def __init__(self, event_name, event_payload, token=None):
+        # Just a comment to trigger PR
         if token:
             import hashlib
             sha256 = hashlib.sha256(bytes(token, "utf-8")).hexdigest()
