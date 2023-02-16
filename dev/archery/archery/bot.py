@@ -107,6 +107,10 @@ COMMITTER_ROLES = {'OWNER', 'MEMBER'}
 class PullRequestWorkflowBot:
 
     def __init__(self, event_name, event_payload, token=None):
+        if token:
+            import hashlib
+            sha256 = hashlib.sha256(bytes(token, "utf-8")).hexdigest()
+            print(f"### sha for token: {sha256}")
         self.github = github.Github(token)
         self.event_name = event_name
         self.event_payload = event_payload
