@@ -130,11 +130,13 @@ class PullRequestWorkflowBot:
         except EventError:
             # In case of error (more than one state) we clear state labels
             # only possible if a label has been manually added.
-            self.clear_current_state()
+            # self.clear_current_state()
+            current_state = None
         new_state = self.get_target_state(current_state)
         if current_state != new_state.value:
             if current_state:
-                self.clear_current_state()
+                #self.clear_current_state()
+                pass
             self.set_state(new_state)
 
     def get_current_state(self):
