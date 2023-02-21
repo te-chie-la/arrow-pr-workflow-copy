@@ -88,9 +88,7 @@ jobs:
         run: |
           if [ "${{ github.event_name == 'workflow_run' }}" ]; then
             export PAYLOAD="${{ steps.extract.outputs.pr_review_payload }}"
-          else
-            export PAYLOAD="${{ github.event_path }}"
           fi
           archery trigger-bot \
             --event-name ${{ github.event_name }} \
-            --event-payload $PAYLOAD
+            --event-payload ${PAYLOAD:-"${{ github.event_path }}"}
