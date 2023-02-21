@@ -75,12 +75,12 @@ jobs:
             });
             var fs = require('fs');
             fs.writeFileSync('${{github.workspace}}/pr_review.zip', Buffer.from(pr_review_download.data));
-    - name: Extract artifact
-      id: extract
-      if: {{ github.event_name == 'workflow_run' }}
-      run: |
-        unzip pr_review.zip
-        echo "pr_review_payload=$(cat pr_review.txt)" >> $GITHUB_OUTPUT
+      - name: Extract artifact
+        id: extract
+        if: {{ github.event_name == 'workflow_run' }}
+        run: |
+          unzip pr_review.zip
+          echo "pr_review_payload=$(cat pr_review.txt)" >> $GITHUB_OUTPUT
       - name: Handle PR workflow event
         env:
           ARROW_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
