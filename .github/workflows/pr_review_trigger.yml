@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Save PR review Payload"
-        run: echo "${{ github.event_path }}" > pr_review_payload.txt
+        run: echo "${{ github.event }}" > pr_review_payload.txt
       - name: "Upload PR review Payload"
         uses: actions/upload-artifact@v3
         with:
