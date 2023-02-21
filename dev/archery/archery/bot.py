@@ -294,6 +294,7 @@ class CommentBot:
 @click.pass_context
 def actions(ctx):
     """Ursabot"""
+    # Comment to trigger PR
     ctx.ensure_object(dict)
 
 
