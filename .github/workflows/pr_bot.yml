@@ -54,7 +54,7 @@ jobs:
         run: pip install -e arrow/dev/archery[bot]
       - name: 'Download PR review payload'
         id: 'download'
-        if: {{ github.event_name == 'workflow_run' }}
+        if: github.event_name == 'workflow_run'
         uses: actions/github-script@v6
         with:
           script: |
@@ -77,7 +77,7 @@ jobs:
             fs.writeFileSync('${{github.workspace}}/pr_review.zip', Buffer.from(pr_review_download.data));
       - name: Extract artifact
         id: extract
-        if: {{ github.event_name == 'workflow_run' }}
+        if: github.event_name == 'workflow_run'
         run: |
           unzip pr_review.zip
           echo "pr_review_payload=$(cat pr_review.txt)" >> $GITHUB_OUTPUT
