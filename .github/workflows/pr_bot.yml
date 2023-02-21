@@ -52,11 +52,45 @@ jobs:
           python-version: 3.8
       - name: Install Archery and Crossbow dependencies
         run: pip install -e arrow/dev/archery[bot]
+      - name: 'Download PR review payload'
+        id: 'download'
+        if: {{ github.event_name == 'workflow_run' }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const run_id = "${{ github.event.workflow_run.id }}";
+            let artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: run_id,
+            });
+            let pr_review_artifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "pr_review_payload"
+            })[0];
+            let pr_review_download = await github.rest.actions.downloadArtifact({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              artifact_id: pr_review_artifact.id,
+              archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{github.workspace}}/pr_review.zip', Buffer.from(pr_review_download.data));
+    - name: Extract artifact
+      id: extract
+      if: {{ github.event_name == 'workflow_run' }}
+      run: |
+        unzip pr_review.zip
+        echo "pr_review_payload=$(cat pr_review.txt)" >> $GITHUB_OUTPUT
       - name: Handle PR workflow event
         env:
           ARROW_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CROSSBOW_GITHUB_TOKEN: ${{ secrets.CROSSBOW_GITHUB_TOKEN }}
         run: |
+          if [ "${{ github.event_name == 'workflow_run' }}" ]; then
+            export PAYLOAD="${{ steps.extract.outputs.pr_review_payload }}"
+          else
+            export PAYLOAD="${{ github.event_path }}"
+          fi
           archery trigger-bot \
             --event-name ${{ github.event_name }} \
-            --event-payload ${{ github.event_path }}
+            --event-payload $PAYLOAD
