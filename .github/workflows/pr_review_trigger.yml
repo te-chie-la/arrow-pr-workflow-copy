@@ -25,10 +25,8 @@ jobs:
     name: "Label PRs when reviewed"
     runs-on: ubuntu-latest
     steps:
-      - name: "Save PR review Payload"
-        run: echo "${{ github.event }}" > pr_review_payload.txt
       - name: "Upload PR review Payload"
         uses: actions/upload-artifact@v3
         with:
-          path: "pr_review_payload.txt"
+          path: "${{ github.event_path }}"
           name: "pr_review_payload"

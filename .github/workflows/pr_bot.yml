@@ -80,15 +80,15 @@ jobs:
         if: github.event_name == 'workflow_run'
         run: |
           unzip pr_review.zip
-          echo "pr_review_payload=$(cat pr_review_payload.txt)" >> $GITHUB_OUTPUT
+          echo "pr_review_path=$(pwd)/event.json" >> $GITHUB_OUTPUT
       - name: Handle PR workflow event
         env:
           ARROW_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CROSSBOW_GITHUB_TOKEN: ${{ secrets.CROSSBOW_GITHUB_TOKEN }}
         run: |
           if [ "${{ github.event_name == 'workflow_run' }}" ]; then
-            export PAYLOAD="${{ steps.extract.outputs.pr_review_payload }}"
+            export PR_REVIEW_PATH="${{ steps.extract.outputs.pr_review_path }}"
           fi
           archery trigger-bot \
             --event-name ${{ github.event_name }} \
-            --event-payload ${PAYLOAD:-"${{ github.event_path }}"}
+            --event-payload ${PR_REVIEW_PATH:-"${{ github.event_path }}"}
