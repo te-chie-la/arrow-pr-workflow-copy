@@ -70,6 +70,7 @@ class Command(_CommandMixin, click.Command):
 class Group(_CommandMixin, click.Group):
 
     def command(self, *args, **kwargs):
+        # Comment to trigger PR
         kwargs.setdefault('cls', Command)
         return super().command(*args, **kwargs)
 
