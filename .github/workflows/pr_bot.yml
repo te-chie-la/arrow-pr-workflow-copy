@@ -87,8 +87,10 @@ jobs:
           CROSSBOW_GITHUB_TOKEN: ${{ secrets.CROSSBOW_GITHUB_TOKEN }}
         run: |
           if [ "${{ github.event_name == 'workflow_run' }}" ]; then
+            # workflow_run is executed on PR review. Update to original event.
+            export EVENT_NAME="pull_request_review"
             export PR_REVIEW_PATH="${{ steps.extract.outputs.pr_review_path }}"
           fi
           archery trigger-bot \
-            --event-name ${{ github.event_name }} \
+            --event-name ${EVENT_NAME:-"${{ github.event_name }}"} \
             --event-payload ${PR_REVIEW_PATH:-"${{ github.event_path }}"}
