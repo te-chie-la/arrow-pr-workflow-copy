@@ -25,7 +25,7 @@ on:
       - synchronize
   workflow_run:
     workflows: ["Label when reviewed"]
-    types: ['requested']
+    types: ['completed']
 
 permissions:
   contents: read
@@ -88,9 +88,11 @@ jobs:
         run: |
           if [ "${{ github.event_name == 'workflow_run' }}" ]; then
             # workflow_run is executed on PR review. Update to original event.
-            export EVENT_NAME="pull_request_review"
-            export PR_REVIEW_PATH="${{ steps.extract.outputs.pr_review_path }}"
+            archery trigger-bot \
+              --event-name "pull_request_review" \
+              --event-payload ${{ steps.extract.outputs.pr_review_path }}
+          else
+            archery trigger-bot \
+              --event-name ${{ github.event_name }} \
+              --event-payload ${{ github.event_path }}
           fi
-          archery trigger-bot \
-            --event-name ${EVENT_NAME:-"${{ github.event_name }}"} \
-            --event-payload ${PR_REVIEW_PATH:-"${{ github.event_path }}"}
