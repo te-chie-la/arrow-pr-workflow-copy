@@ -124,7 +124,6 @@ class PullRequestWorkflowBot:
 
     def handle(self):
         # Comment PR
-        # Comment after request changes
         print(f"event_name: {self.event_name} - event_payload: {self.event_payload}")
         current_state = None
         try:
