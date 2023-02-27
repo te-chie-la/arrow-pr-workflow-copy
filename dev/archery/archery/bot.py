@@ -116,6 +116,8 @@ class PullRequestWorkflowBot:
         """
         Returns a github.PullRequest object associated with the event.
         """
+        # Comment to trigger PR
+        # New comment with changes
         return self.repo.get_pull(self.event_payload['pull_request']['number'])
 
     @cached_property
