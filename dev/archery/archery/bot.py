@@ -120,6 +120,7 @@ class PullRequestWorkflowBot:
 
     @cached_property
     def repo(self):
+        # PR workflow
         return self.github.get_repo(self.event_payload['repository']['id'], lazy=True)
 
     def handle(self):
