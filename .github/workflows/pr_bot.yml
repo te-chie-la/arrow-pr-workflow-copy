@@ -31,7 +31,6 @@ permissions:
   actions: read
   checks: read
   deployments: read
-  id-token: read
   discussions: read
   packages: read
   pages: read
