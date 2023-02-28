@@ -178,10 +178,11 @@ class PullRequestWorkflowBot:
                                    in COMMITTER_ROLES)
             if not is_committer_review:
                 # Non-committer reviews cannot change state once committer has already
-                # reviewed and requested changes.
+                # reviewed, requested changes or approved
                 if current_state in (
                         PullRequestState.change_review,
-                        PullRequestState.changes):
+                        PullRequestState.changes,
+                        PullRequestState.merge):
                     return current_state
                 else:
                     return PullRequestState.committer_review

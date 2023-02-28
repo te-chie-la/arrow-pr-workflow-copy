@@ -28,6 +28,16 @@ on:
     types: ['completed']
 
 permissions:
+  actions: read
+  checks: read
+  deployments: read
+  id-token: read
+  discussions: read
+  packages: read
+  pages: read
+  repository-projects: read
+  security-events: read
+  statuses: read
   contents: read
   pull-requests: write
   issues: write
