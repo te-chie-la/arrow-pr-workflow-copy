@@ -107,6 +107,7 @@ COMMITTER_ROLES = {'OWNER', 'MEMBER'}
 class PullRequestWorkflowBot:
 
     def __init__(self, event_name, event_payload, token=None):
+        # Pr comment
         self.github = github.Github(token)
         self.event_name = event_name
         self.event_payload = event_payload
