@@ -137,6 +137,12 @@ class PullRequestWorkflowBot:
                 self.clear_current_state()
             self.set_state(next_state)
 
+    @classmethod
+    def is_committer(cls, gh_obj):
+        author_association = gh_obj.raw_data['author_association']
+        print(f"Author Association is {author_association}")
+        return author_association in COMMITTER_ROLES
+
     def get_current_state(self):
         """
         Returns a PullRequestState with the current PR state label
@@ -166,16 +172,17 @@ class PullRequestWorkflowBot:
         """
         if (self.event_name == "pull_request_target" and
                 self.event_payload['action'] == 'opened'):
-            if (self.event_payload['pull_request']['author_association'] in
-                    COMMITTER_ROLES):
+            if (self.is_committer(self.pull)):
                 return PullRequestState.committer_review
             else:
                 return PullRequestState.review
         elif (self.event_name == "pull_request_review" and
                 self.event_payload["action"] == "submitted"):
             review_state = self.event_payload["review"]["state"].lower()
-            is_committer_review = (self.event_payload['review']['author_association']
-                                   in COMMITTER_ROLES)
+            # Try to retrieve pull request review using GITHUB_TOKEN instead of payload
+            is_committer_review = self.is_committer(
+                self.pull.get_review(self.event_payload['review']['id'])
+            )
             if not is_committer_review:
                 # Non-committer reviews cannot change state once committer has already
                 # reviewed, requested changes or approved
