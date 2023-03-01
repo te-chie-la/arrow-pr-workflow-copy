@@ -503,6 +503,7 @@ class PullRequest(object):
                 if x["name"].startswith("maint-")]
 
     def _get_issue(self):
+        # Comment
         if self.title.startswith("MINOR:"):
             return None
 
