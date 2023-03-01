@@ -106,10 +106,11 @@ COMMITTER_ROLES = {'OWNER', 'MEMBER'}
 
 class PullRequestWorkflowBot:
 
-    def __init__(self, event_name, event_payload, token=None):
+    def __init__(self, event_name, event_payload, token=None, member_token=None):
         self.github = github.Github(token)
         self.event_name = event_name
         self.event_payload = event_payload
+        self._member_token = member_token
 
     @cached_property
     def pull(self):
@@ -137,8 +138,14 @@ class PullRequestWorkflowBot:
                 self.clear_current_state()
             self.set_state(next_state)
 
-    @classmethod
-    def is_committer(cls, gh_obj):
+    def is_committer(self, review=False):
+        # We require a new connection to GitHub with a specific token to read
+        # membership association.
+        member_conn = github.Github(self._member_token)
+        repo = member_conn.get_repo(self.event_payload['repository']['id'], lazy=True)
+        gh_obj = repo.get_pull(self.event_payload['pull_request']['number'])
+        if review:
+            gh_obj = gh_obj.get_review(self.event_payload['review']['id'])
         author_association = gh_obj.raw_data['author_association']
         print(f"Author Association is {author_association}")
         return author_association in COMMITTER_ROLES
@@ -172,17 +179,14 @@ class PullRequestWorkflowBot:
         """
         if (self.event_name == "pull_request_target" and
                 self.event_payload['action'] == 'opened'):
-            if (self.is_committer(self.pull)):
+            if (self.is_committer()):
                 return PullRequestState.committer_review
             else:
                 return PullRequestState.review
         elif (self.event_name == "pull_request_review" and
                 self.event_payload["action"] == "submitted"):
             review_state = self.event_payload["review"]["state"].lower()
-            # Try to retrieve pull request review using GITHUB_TOKEN instead of payload
-            is_committer_review = self.is_committer(
-                self.pull.get_review(self.event_payload['review']['id'])
-            )
+            is_committer_review = self.is_committer(review=True)
             if not is_committer_review:
                 # Non-committer reviews cannot change state once committer has already
                 # reviewed, requested changes or approved

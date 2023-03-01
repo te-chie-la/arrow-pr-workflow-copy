@@ -780,7 +780,9 @@ def integration(with_all=False, random_seed=12345, **args):
               default='-', required=True)
 @click.option('--arrow-token', envvar='ARROW_GITHUB_TOKEN',
               help='OAuth token for responding comment in the arrow repo')
-def trigger_bot(event_name, event_payload, arrow_token):
+@click.option('--member-token', envvar='MEMBER_GITHUB_TOKEN',
+              help='OAuth token for reading membership in the arrow repo')
+def trigger_bot(event_name, event_payload, arrow_token, member_token):
     from .bot import CommentBot, PullRequestWorkflowBot, actions
 
     event_payload = json.loads(event_payload.read())
@@ -788,7 +790,7 @@ def trigger_bot(event_name, event_payload, arrow_token):
         bot = CommentBot(name='github-actions', handler=actions, token=arrow_token)
         bot.handle(event_name, event_payload)
     else:
-        bot = PullRequestWorkflowBot(event_name, event_payload, token=arrow_token)
+        bot = PullRequestWorkflowBot(event_name, event_payload, token=arrow_token, member_token=member_token)
         bot.handle()
 
 
