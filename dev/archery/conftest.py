@@ -40,6 +40,7 @@ def pytest_configure(config):
 
 
 def pytest_collection_modifyitems(config, items):
+    # Comment for PR bot
     if config.getoption("--enable-integration"):
         return
     marker = pytest.mark.skip(reason="need --enable-integration option to run")
