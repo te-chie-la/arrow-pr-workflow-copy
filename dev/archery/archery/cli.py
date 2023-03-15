@@ -781,7 +781,7 @@ def integration(with_all=False, random_seed=12345, **args):
 @click.option('--event-name', '-n', required=True)
 @click.option('--event-payload', '-p', type=click.File('r', encoding='utf8'),
               default='-', required=True)
-def trigger_bot(arrow_token, committers_path, event_name, event_payload):
+def trigger_bot(arrow_token, committers, event_name, event_payload):
     from .bot import CommentBot, PullRequestWorkflowBot, actions
     from ruamel.yaml import YAML
 
@@ -790,12 +790,12 @@ def trigger_bot(arrow_token, committers_path, event_name, event_payload):
         bot = CommentBot(name='github-actions', handler=actions, token=arrow_token)
         bot.handle(event_name, event_payload)
     else:
-        committers = None
-        if committers_path:
-            with pathlib.Path(committers_path).open() as fp:
-                committers = [committer['alias'] for committer in YAML().load(fp)]
+        committers_list = None
+        if committers:
+            with pathlib.Path(committers).open() as fp:
+                committers_list = [committer['alias'] for committer in YAML().load(fp)]
         bot = PullRequestWorkflowBot(event_name, event_payload, token=arrow_token,
-                                     committers=committers)
+                                     committers=committers_list)
         bot.handle()
 
 
