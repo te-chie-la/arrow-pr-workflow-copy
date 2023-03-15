@@ -40,6 +40,7 @@ extras = {
                         'setuptools_scm'],
     'numpydoc': ['numpydoc==1.1.0']
 }
+# Comment
 extras['bot'] = extras['crossbow'] + ['pygithub', 'jira']
 extras['all'] = list(set(functools.reduce(operator.add, extras.values())))
 
