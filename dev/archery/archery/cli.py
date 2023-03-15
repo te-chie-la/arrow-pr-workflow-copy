@@ -56,6 +56,7 @@ def archery(ctx, debug, pdb, quiet):
     See sub-commands help with `archery <cmd> --help`.
 
     """
+    # new comment
     # Ensure ctx.obj exists
     ctx.ensure_object(dict)
 
