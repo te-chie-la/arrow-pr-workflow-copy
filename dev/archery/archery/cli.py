@@ -236,6 +236,7 @@ def build(ctx, src, build_dir, force, targets, **kwargs):
     archery build --targets=all --targets=test build
     """
     # Arrow's cpp cmake configuration
+    # Another comment
     conf = CppConfiguration(**kwargs)
     # This is a closure around cmake invocation, e.g. calling `def.build()`
     # yields a directory ready to be run with the generator
