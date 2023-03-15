@@ -216,6 +216,7 @@ class PullRequestWorkflowBot:
 class CommentBot:
 
     def __init__(self, name, handler, token=None):
+        # New comment
         # TODO(kszucs): validate
         assert isinstance(name, str)
         assert callable(handler)
